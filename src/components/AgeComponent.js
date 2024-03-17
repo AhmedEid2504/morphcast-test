@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import "./componentCSS/ageComponent.css";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, serverTimestamp, set } from "firebase/database";
 import firebaseConfig from "../config";
@@ -7,6 +8,7 @@ const AgeComponent = () => {
   const [ageValue, setAgeValue] = useState(0);
   const [ageMin, setAgeMin] = useState(0);
   const [ageMax, setAgeMax] = useState(10);
+  const [userName, setUserName] = useState(""); // State variable for the user's name
   const timeout = useRef(undefined);
 
   useEffect(() => {
@@ -43,6 +45,7 @@ const AgeComponent = () => {
 
       // Asynchronous operation, handle with then and catch
       set(newAgeRef, {
+        userName: userName, // Add the user's name to the data
         age: age,
         timestamp: serverTimestamp(),
       })
@@ -51,11 +54,20 @@ const AgeComponent = () => {
     }
 
     bindEvent();
-  }, []);
+  }, [userName]); // Include userName in the dependency array to re-run the effect when it changes
 
   return (
     <div>
       <p style={{ fontSize: "20px" }}>Age Component:</p>
+      <div>
+        {/* Input field for the user's name */}
+        <input
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="Enter your name"
+        />
+      </div>
       <div>
         <span className="age" id="ageMin">
           {ageMin}
