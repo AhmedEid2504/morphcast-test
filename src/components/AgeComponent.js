@@ -54,7 +54,7 @@ const AgeComponent = () => {
     }
 
     bindEvent();
-  }, [userName]); // Include userName in the dependency array to re-run the effect when it changes
+  }); // Include userName in the dependency array to re-run the effect when it changes
 
   return (
     <div>
