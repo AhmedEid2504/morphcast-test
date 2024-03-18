@@ -44,5 +44,8 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      class ScriptLoader{static loadScript(t,e=null){return new Promise((a=>{const r=document.createElement("script");r.type="text/javascript",r.readyState?r.onreadystatechange=function(){"loaded"!==r.readyState&&"complete"!==r.readyState||(r.onreadystatechange=null,a())}:r.onload=function(){a()},e&&r.setAttribute("data-config",e),r.src=t,document.getElementsByTagName("head")[0].appendChild(r)}))}}ScriptLoader.loadScript("https://sdk.morphcast.com/emotion-statistics/v1.0-beta/script.js").then((()=>{new MorphCastStatistics.QuickSetup({token:"3f700u34013792rw7u64ssuuu6527ru7610w07r2v7v337bje4",moduleNames:["FACE_AROUSAL_VALENCE","FACE_ATTENTION","DATA_AGGREGATOR"],privacyPopupText:{title:"Allow us to use your camera",description:"This experience is designed to be viewed with your camera on. The next screen will ask your consent to access data from your camera.",url:"https://YOUR_DOMAIN/<YOUR_PRIVACY_POLICY>"},hasCompatibilityAlert:!0,sendDatainterval:5e3,tickInterval:1e3,stopAfter:72e5}).start()}));
+    </script>
   </body>
 </html>
