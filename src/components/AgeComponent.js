@@ -9,6 +9,7 @@ const AgeComponent = () => {
   const [ageMin, setAgeMin] = useState(0);
   const [ageMax, setAgeMax] = useState(10);
   const [userName, setUserName] = useState(""); // State variable for the user's name
+  const [dataSentRecently, setDataSentRecently] = useState(false); // State variable to track whether data has been sent recently
   const timeout = useRef(undefined);
 
   useEffect(() => {
@@ -19,7 +20,8 @@ const AgeComponent = () => {
         setAgeValue(0);
         setAgeMin(0);
         setAgeMax(0);
-      }, 3000);
+        setDataSentRecently(false); // Reset the state variable after 10 seconds
+      }, 10000); // Change the timeout duration to 10 seconds
 
       timeout.current = to;
     }
@@ -29,6 +31,12 @@ const AgeComponent = () => {
     }
 
     function handleAgeEvent(evt) {
+      if (!userName || dataSentRecently) {
+        // If userName is empty or data has been sent recently, return without saving data
+        console.error("Please enter your name or wait until data can be sent again");
+        return;
+      }
+
       resetTimeout();
       let age = Math.floor(evt.detail.output.numericAge) || 0;
       setAgeValue(age);
@@ -49,12 +57,15 @@ const AgeComponent = () => {
         age: age,
         timestamp: serverTimestamp(),
       })
-        .then(() => console.log("Age data saved to Firebase"))
+        .then(() => {
+          console.log("Age data saved to Firebase");
+          setDataSentRecently(true); // Set the state variable to true after data is sent
+        })
         .catch((error) => console.error("Error saving age data:", error));
     }
 
     bindEvent();
-  }); // Include userName in the dependency array to re-run the effect when it changes
+  }, [userName, dataSentRecently]); // Include dataSentRecently in the dependency array to re-run the effect when it changes
 
   return (
     <div>
