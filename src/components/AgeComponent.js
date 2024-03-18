@@ -61,6 +61,7 @@ const AgeComponent = () => {
       })
         .then(() => {
           console.log("Age data saved to Firebase");
+          resetTimeout(); // Reset the timeout only when data is sent successfully
           setDataSentRecently(true); // Set the state variable to true after data is sent
         })
         .catch((error) => console.error("Error saving age data:", error));
