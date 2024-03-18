@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import "./componentCSS/ageComponent.css";
+import "../componentCSS/ageComponent.css";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, serverTimestamp, set } from "firebase/database";
 import firebaseConfig from "../config";
@@ -9,6 +9,7 @@ const AgeComponent = () => {
   const [ageMin, setAgeMin] = useState(0);
   const [ageMax, setAgeMax] = useState(10);
   const [userName, setUserName] = useState(""); // State variable for the user's name
+  const [isTyping, setIsTyping] = useState(false); // State variable to track whether the user is typing
   const [dataSentRecently, setDataSentRecently] = useState(false); // State variable to track whether data has been sent recently
   const timeout = useRef(undefined);
 
@@ -20,8 +21,9 @@ const AgeComponent = () => {
         setAgeValue(0);
         setAgeMin(0);
         setAgeMax(0);
-        setDataSentRecently(false); // Reset the state variable after 10 seconds
-      }, 30000); // Change the timeout duration to 10 seconds
+        setIsTyping(false); // Reset the isTyping state variable after 10 seconds
+        setDataSentRecently(false); // Reset the dataSentRecently state variable after 10 seconds
+      }, 10000); // Change the timeout duration to 10 seconds
 
       timeout.current = to;
     }
@@ -31,8 +33,8 @@ const AgeComponent = () => {
     }
 
     function handleAgeEvent(evt) {
-      if (!userName || dataSentRecently) {
-        // If userName is empty or data has been sent recently, return without saving data
+      if (!userName || isTyping || dataSentRecently) {
+        // If userName is empty, user is typing, or data has been sent recently, return without saving data
         console.error("Please enter your name or wait until data can be sent again");
         return;
       }
@@ -65,7 +67,7 @@ const AgeComponent = () => {
     }
 
     bindEvent();
-  }, [userName, dataSentRecently]); // Include dataSentRecently in the dependency array to re-run the effect when it changes
+  }, [userName, isTyping, dataSentRecently]); // Include isTyping and dataSentRecently in the dependency array
 
   return (
     <div>
@@ -75,7 +77,11 @@ const AgeComponent = () => {
         <input
           type="text"
           value={userName}
-          onChange={(e) => setUserName(e.target.value)}
+          onChange={(e) => {
+            setUserName(e.target.value);
+            setIsTyping(true); // Set isTyping to true while the user is typing
+          }}
+          onBlur={() => setIsTyping(false)} // Set isTyping to false when the input field loses focus
           placeholder="Enter your name"
         />
       </div>
