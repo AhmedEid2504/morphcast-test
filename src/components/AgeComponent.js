@@ -23,7 +23,7 @@ const AgeComponent = () => {
         setAgeMax(0);
         setIsTyping(false); // Reset the isTyping state variable after 10 seconds
         setDataSentRecently(false); // Reset the dataSentRecently state variable after 10 seconds
-      }, 10000); // Change the timeout duration to 10 seconds
+      }, 30000); // Change the timeout duration to 10 seconds
 
       timeout.current = to;
     }
@@ -67,6 +67,11 @@ const AgeComponent = () => {
     }
 
     bindEvent();
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("CY_FACE_AGE_RESULT", handleAgeEvent);
+    };
   }, [userName, isTyping, dataSentRecently]); // Include isTyping and dataSentRecently in the dependency array
 
   return (
